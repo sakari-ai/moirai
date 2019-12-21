@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+
+  consul-agent-1: &consul-agent
+    image: consul:latest
+    networks:
+      - consul-demo
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-agent-2:
+    <<: *consul-agent
+
+  consul-agent-3:
+    <<: *consul-agent
+
+  consul-server-1: &consul-server
+    <<: *consul-agent
+    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-server-2:
+    <<: *consul-server
+
+  consul-server-bootstrap:
+    <<: *consul-agent
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "innete"
+    ports:
+      - "5432:5432"
+    networks:
+      - moirai_web
+  moirai:
+    ports:
+      - "8088:8088"
+    build:
+      context: .
+      args:
+        - service_name=gameon
+    environment:
+      - CONFIG_STORAGE=http://consul-server-bootstrap:8500
+      - CONFIG_NAMESPACE=mobiclix/gameon/service
+      - ENV=dev
+    command: "./gameon start innete"
+    networks:
+      - moirai_web
+      - consul-demo
+networks:
+  consul-demo:
+  moirai_web:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 11.11.11.0/16

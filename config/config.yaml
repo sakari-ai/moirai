@@ -1,0 +1,9 @@
+moirai:
+  http:
+    address: localhost:8088
+  grpc:
+    address: localhost:8089
+  redis:
+    address: 127.0.0.1
+    db: 0
+    password:
