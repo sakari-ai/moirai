@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/sakari-ai/moirai/config/loader"
 	"github.com/facebookgo/inject"
+	"github.com/sakari-ai/moirai/config/loader"
 )
 
 func populate(opts ...Object) error {
