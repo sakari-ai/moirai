@@ -1,0 +1,12 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "bitbucket.org/mobiclix/innete/proto;proto";
+
+message VersionResponse {
+    string value = 1;
+}
+
+message RequestObjectById {
+    string id = 1;
+}
