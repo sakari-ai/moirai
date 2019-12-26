@@ -2,17 +2,17 @@
 
 PROTO_FILES=$(find proto -name "*.proto")
 for PROTO_FILE in ${PROTO_FILES}; do
-    protoc -I/usr/local/include -Iproto \
-        -I${GOPATH}/src \
-        -I=$GOPATH/src/github.com/gogo/protobuf/protobuf \
-        -Ithird_party/googleapis \
-        --go_out=plugins=grpc:${GOPATH}/src \
+    protoc -I=/usr/local/include -Iproto \
+        -I=${GOPATH}/src \
+        -I=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
+        -I=third_party/googleapis \
+        --go_out=plugins=grpc:./ \
         ${PROTO_FILE}
     protoc -I/usr/local/include -Iproto \
-        -I${GOPATH}/src \
-        -I=$GOPATH/src/github.com/gogo/protobuf/protobuf \
-        -Ithird_party/googleapis \
-        --grpc-gateway_out=logtostderr=true:${GOPATH}/src \
+        -I=${GOPATH}/src \
+        -I=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
+        -I=third_party/googleapis \
+        --grpc-gateway_out=logtostderr=true:proto \
         ${PROTO_FILE}
     protoc -I/usr/local/include -Iproto \
         -I${GOPATH}/src \

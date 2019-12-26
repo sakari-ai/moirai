@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-option go_package = "bitbucket.org/mobiclix/innete/proto;proto";
+option go_package = "proto;proto";
 
 message VersionResponse {
     string value = 1;
@@ -9,4 +9,19 @@ message VersionResponse {
 
 message RequestObjectById {
     string id = 1;
+}
+
+message Column {
+    string type = 1;
+    int32 minLength = 2;
+    int32 maxLength = 3;
+    int64 minimum = 4;
+    int64 maximum = 5;
+}
+
+message Schema {
+    string type = 1;
+    string id = 2;
+    map<string, Column> properties = 3;
+    repeated string required = 4;
 }

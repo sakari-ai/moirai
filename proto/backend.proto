@@ -1,0 +1,23 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "proto;proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "schema.proto";
+
+service Backend {
+    // Version
+    rpc Version (google.protobuf.Empty) returns (VersionResponse) {
+        option (google.api.http) = {
+            get: "/v1/version"
+        };
+    }
+    //Update User Betting
+    rpc CreateSchema (Schema) returns (Schema) {
+        option (google.api.http) = {
+            put: "/v1/schema"
+            body:"*"
+        };
+    }
+}

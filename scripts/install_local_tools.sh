@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRPC_GATEWAY_VERSION="v1.5.1"
+GRPC_GATEWAY_VERSION="v1.9.0"
 PROTOC_GEN_GRPC_GATEWAY_URL="https://github.com/grpc-ecosystem/grpc-gateway/releases/download/${GRPC_GATEWAY_VERSION}/protoc-gen-grpc-gateway-${GRPC_GATEWAY_VERSION}-darwin-x86_64"
 PROTOC_GEN_SWAGGER_URL="https://github.com/grpc-ecosystem/grpc-gateway/releases/download/${GRPC_GATEWAY_VERSION}/protoc-gen-swagger-${GRPC_GATEWAY_VERSION}-darwin-x86_64"
 

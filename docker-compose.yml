@@ -33,7 +33,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: "innete"
+      POSTGRES_PASSWORD: "moirai"
     ports:
       - "5432:5432"
     networks:
@@ -44,12 +44,12 @@ services:
     build:
       context: .
       args:
-        - service_name=gameon
+        - service_name=moirai
     environment:
       - CONFIG_STORAGE=http://consul-server-bootstrap:8500
-      - CONFIG_NAMESPACE=mobiclix/gameon/service
+      - CONFIG_NAMESPACE=moirai/backend
       - ENV=dev
-    command: "./gameon start innete"
+    command: "./moirai start moirai"
     networks:
       - moirai_web
       - consul-demo

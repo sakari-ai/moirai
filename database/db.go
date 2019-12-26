@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	lru "github.com/hashicorp/golang-lru"
-
 	"github.com/sakari-ai/moirai/database/gorm"
 )
 
@@ -86,7 +85,7 @@ type DBEngine interface {
 
 type DB struct {
 	db      *gorm.DB
-	SkCache Cache `inject:"innete_cache"`
+	DBCache Cache `inject:"db_cache"`
 }
 
 // Open is a drop-in replacement for Open()
@@ -132,7 +131,7 @@ func OpenInMemorySqlite(opts ...Option) (DBEngine, error) {
 
 	return &DB{
 		db:      db,
-		SkCache: args.cache,
+		DBCache: args.cache,
 	}, nil
 }
 
@@ -140,12 +139,12 @@ func OpenInMemorySqlite(opts ...Option) (DBEngine, error) {
 func wrap(db *gorm.DB, cache Cache) DBEngine {
 	return &DB{
 		db:      db,
-		SkCache: cache,
+		DBCache: cache,
 	}
 }
 
 func (d *DB) Cache() Cache {
-	return d.SkCache
+	return d.DBCache
 }
 
 func (d *DB) Close() error {
