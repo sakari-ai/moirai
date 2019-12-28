@@ -23,7 +23,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#1: String Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "string",
+					"type":        StringTp,
 					"default":     "paul",
 					"description": "description str",
 					"minLength":   1,
@@ -37,7 +37,7 @@ func TestCreateProperty(t *testing.T) {
 				MinLength:   1,
 				MaxLength:   10,
 				Default:     "paul",
-				Type:        "string",
+				Type:        StringTp,
 			},
 			wantErr: false,
 		},
@@ -45,7 +45,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#2: Integer Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "integer",
+					"type":        IntegerTp,
 					"default":     10,
 					"description": "description int",
 					"minimum":     1,
@@ -59,7 +59,7 @@ func TestCreateProperty(t *testing.T) {
 				Minimum:     1,
 				Maximum:     10,
 				Default:     10,
-				Type:        "integer",
+				Type:        IntegerTp,
 			},
 			wantErr: false,
 		},
@@ -67,7 +67,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#3: Float Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "float",
+					"type":        FloatTp,
 					"default":     2.2,
 					"description": "description float",
 					"minimum":     1.0,
@@ -81,7 +81,7 @@ func TestCreateProperty(t *testing.T) {
 				Minimum:     1.0,
 				Maximum:     10.0,
 				Default:     2.2,
-				Type:        "float",
+				Type:        FloatTp,
 			},
 			wantErr: false,
 		},
@@ -89,7 +89,8 @@ func TestCreateProperty(t *testing.T) {
 			name: "#4: DateTime Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "date-time",
+					"format":      "date-time",
+					"type":        "string",
 					"default":     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
 					"description": "description date",
 				})
@@ -100,7 +101,8 @@ func TestCreateProperty(t *testing.T) {
 			want: &DateTimeType{
 				Description: "description date",
 				Default:     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
-				Type:        "date-time",
+				Format:      "date-time",
+				Type:        StringTp,
 			},
 			wantErr: false,
 		},

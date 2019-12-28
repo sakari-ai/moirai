@@ -163,10 +163,11 @@ func (b *DateTimeType) Load() {
 
 func CreateProperty(p *DTOStruct) (PropertyType, error) {
 	tp := p.GetField("type")
+	format := p.GetField("format")
 	if tp == nil {
 		return nil, errors.BadError("type not found")
 	}
-	if tp.GetStringValue() == StringTp {
+	if tp.GetStringValue() == StringTp && format.GetStringValue() == "" {
 		prop := new(StringType)
 		err := prop.Bind(p)
 		return prop, err
@@ -186,9 +187,10 @@ func CreateProperty(p *DTOStruct) (PropertyType, error) {
 		err := prop.Bind(p)
 		return prop, err
 	}
-	if tp.GetStringValue() == DateTp {
+	if tp.GetStringValue() == StringTp && format.GetStringValue() == DateTp {
 		prop := new(DateTimeType)
 		err := prop.Bind(p)
+		prop.Load()
 		return prop, err
 	}
 

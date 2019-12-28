@@ -93,7 +93,8 @@ func (c *Properties) Scan(v interface{}) error {
 
 	for k, val := range data {
 		tpObject := struct {
-			Type string `json:"type"`
+			Type   string `json:"type"`
+			Format string `json:"format"`
 		}{}
 		rawJSON, _ := json.Marshal(val)
 
@@ -102,14 +103,19 @@ func (c *Properties) Scan(v interface{}) error {
 		switch tpObject.Type {
 		case IntegerTp:
 			prop = new(IntegerType)
+			break
 		case FloatTp:
 			prop = new(FloatType)
+			break
 		case StringTp:
+			if tpObject.Format == DateTp {
+				prop = new(DateTimeType)
+				break
+			}
 			prop = new(StringType)
 		case BooleanTp:
 			prop = new(BooleanType)
-		case DateTp:
-			prop = new(DateTimeType)
+			break
 		}
 		if prop != nil {
 			err := json.Unmarshal(rawJSON, prop)

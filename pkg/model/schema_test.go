@@ -45,11 +45,22 @@ func TestProperties_Scan(t *testing.T) {
 			name: "#3: Load Float data",
 			c:    new(Properties),
 			args: args{
-				v: []byte(`{"bet":{"type":"float","description":"betting game"}}`),
+				v: []byte(`{"bet":{"type":"number","description":"betting game"}}`),
 			},
 			wantErr: false,
 			assertKey: func(p *Properties) {
 				assert.Equal(t, p.Columns["bet"], &FloatType{Type: FloatTp, Description: "betting game"})
+			},
+		},
+		{
+			name: "#1: Load Datetime data",
+			c:    new(Properties),
+			args: args{
+				v: []byte(`{"name":{"type":"string","description":"drinking beer with Dima","format":"date-time"}}`),
+			},
+			wantErr: false,
+			assertKey: func(p *Properties) {
+				assert.Equal(t, p.Columns["name"], &DateTimeType{Type: StringTp, Format: DateTp, Description: "drinking beer with Dima"})
 			},
 		},
 	}
