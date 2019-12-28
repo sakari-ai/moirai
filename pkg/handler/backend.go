@@ -32,7 +32,7 @@ func (m *Moirai) Version(context.Context, *empty.Empty) (*proto.VersionResponse,
 }
 
 func (m *Moirai) CreateSchema(ctx context.Context, req *proto.Schema) (*proto.Schema, error) {
-	schema, err := model.NewSchema(req.Name, req.ProjectID, req.Properties)
+	schema, err := model.NewSchema(req.Name, req.ProjectID, req.Properties, req.Required...)
 	if err != nil {
 		return &proto.Schema{}, err
 	}
@@ -46,8 +46,7 @@ func (m *Moirai) CreateSchema(ctx context.Context, req *proto.Schema) (*proto.Sc
 }
 
 func (m *Moirai) GetSchema(ctx context.Context, req *proto.RequestObjectById) (*proto.Schema, error) {
-	model, _ := m.Storage.GetSchema(uuid.FromStringOrNil(req.Id))
+	sch, _ := m.Storage.GetSchema(uuid.FromStringOrNil(req.Id))
 
-	log.Info("schema", field.Any("schema", model))
-	return &proto.Schema{}, nil
+	return transferSchemaToProto(sch), nil
 }

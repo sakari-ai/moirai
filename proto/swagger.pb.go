@@ -118,6 +118,9 @@ const (
         },
         "projectID": {
           "type": "string"
+        },
+        "version": {
+          "type": "string"
         }
       }
     },

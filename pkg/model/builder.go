@@ -1,9 +1,11 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/golang/protobuf/ptypes/struct"
 	"github.com/mitchellh/hashstructure"
+	"github.com/sakari-ai/moirai/core/util"
 	"github.com/sakari-ai/moirai/internal/lib/ptypes"
 	"github.com/sakari-ai/moirai/pkg/errors"
 	"github.com/sakari-ai/moirai/proto"
@@ -29,6 +31,18 @@ func (d *DTOStruct) GetField(field string) *structpb.Value {
 
 type StringType proto.StringType
 
+func bindingStruct(p interface{}) *structpb.Struct {
+	raw := make(map[string]interface{})
+	bts, _ := json.Marshal(p)
+	json.Unmarshal(bts, &raw)
+
+	return util.StructProto(raw)
+}
+
+func (s *StringType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(s)
+}
+
 func (s *StringType) Bind(p *DTOStruct) error {
 	if defVal := p.GetField("default"); defVal != nil {
 		s.Default = defVal.GetStringValue()
@@ -48,6 +62,10 @@ func (s *StringType) Bind(p *DTOStruct) error {
 }
 
 type IntegerType proto.IntegerType
+
+func (i *IntegerType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(i)
+}
 
 func (i *IntegerType) Bind(p *DTOStruct) error {
 	if defVal := p.GetField("default"); defVal != nil {
@@ -72,6 +90,10 @@ func (i *IntegerType) Bind(p *DTOStruct) error {
 
 type FloatType proto.FloatType
 
+func (fl *FloatType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(fl)
+}
+
 func (fl *FloatType) Bind(p *DTOStruct) error {
 	if defVal := p.GetField("default"); defVal != nil {
 		defVal := defVal.GetNumberValue()
@@ -95,6 +117,10 @@ func (fl *FloatType) Bind(p *DTOStruct) error {
 
 type BooleanType proto.BooleanType
 
+func (b *BooleanType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(b)
+}
+
 func (b *BooleanType) Bind(p *DTOStruct) error {
 	if defVal := p.GetField("description"); defVal != nil {
 		b.Description = defVal.GetStringValue()
@@ -105,6 +131,10 @@ func (b *BooleanType) Bind(p *DTOStruct) error {
 }
 
 type DateTimeType proto.DateTimeType
+
+func (d *DateTimeType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(d)
+}
 
 func (b *DateTimeType) Bind(p *DTOStruct) error {
 	if desVal := p.GetField("description"); desVal != nil {
@@ -171,8 +201,8 @@ func CreateProperty(p *DTOStruct) (PropertyType, error) {
 	return nil, errors.BadError("property not found")
 }
 
-func NewSchema(name, projectId string, columns map[string]*structpb.Struct) (*Schema, error) {
-	sch := &Schema{Name: name}
+func NewSchema(name, projectId string, columns map[string]*structpb.Struct, required ...string) (*Schema, error) {
+	sch := &Schema{Name: name, Required: required}
 	var errs []errors.FieldError
 	projectID, err := uuid.FromString(projectId)
 	if err != nil {
@@ -180,14 +210,14 @@ func NewSchema(name, projectId string, columns map[string]*structpb.Struct) (*Sc
 		return sch, errors.BuildInvalidArgument(errs...)
 	}
 	sch.ProjectID = projectID
-	properties := make(Properties)
+	properties := Properties{Columns: map[string]PropertyType{}}
 	for k, val := range columns {
 		column := DTOStruct(*val)
 		prop, err := CreateProperty(&column)
 		if err != nil {
 			errs = append(errs, errors.FieldError{Field: k, Description: fmt.Sprintf("Field %s has error %s", k, err.Error())})
 		} else {
-			properties[k] = prop
+			properties.Columns[k] = prop
 		}
 	}
 	if len(errs) == 0 {

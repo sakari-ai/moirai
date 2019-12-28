@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql/driver"
 	"encoding/json"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"time"
@@ -19,19 +20,37 @@ type Column struct {
 
 type PropertyType interface {
 	Bind(p *DTOStruct) error
+	ToProtoStruct() *structpb.Struct
 }
 
-type Properties map[string]PropertyType
+type Properties struct {
+	Columns map[string]PropertyType
+}
 
 type Schema struct {
 	ID         uuid.UUID  `gorm:"column:id;primary_key"`
 	Name       string     `gorm:"column:name"`
 	Properties Properties `gorm:"column:properties;type:bytea"`
+	Required   Required   `gorm:"column:required;type:bytea"`
 	ProjectID  uuid.UUID  `gorm:"column:project_id"`
 
 	Version   string `gorm:"column:version"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type Required []string
+
+func (c Required) Value() (driver.Value, error) {
+	return json.Marshal(c)
+}
+
+func (c *Required) Scan(v interface{}) error {
+	if v == nil {
+		return nil
+	}
+
+	return json.Unmarshal(v.([]byte), &c)
 }
 
 func (s *Schema) BeforeCreate(scope *gorm.Scope) error {
@@ -44,7 +63,8 @@ func (c Properties) Value() (driver.Value, error) {
 	return json.Marshal(c)
 }
 
-func (c Properties) Scan(v interface{}) error {
+func (c *Properties) Scan(v interface{}) error {
+	mapping := make(map[string]PropertyType)
 	if v == nil {
 		return nil
 	}
@@ -75,10 +95,11 @@ func (c Properties) Scan(v interface{}) error {
 		if prop != nil {
 			err := json.Unmarshal(rawJSON, prop)
 			if err == nil {
-				c[k] = prop
+				mapping[k] = prop
 			}
 		}
 	}
+	c.Columns = mapping
 
 	return nil
 }

@@ -28,7 +28,7 @@ func TestCreateProperty(t *testing.T) {
 					"default":     "paul",
 					"description": "description str",
 					"minLength":   1,
-					"maxLength":   10,})
+					"maxLength":   10})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
@@ -50,7 +50,7 @@ func TestCreateProperty(t *testing.T) {
 					"default":     10,
 					"description": "description int",
 					"minimum":     1,
-					"maximum":     10,})
+					"maximum":     10})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
@@ -72,7 +72,7 @@ func TestCreateProperty(t *testing.T) {
 					"default":     2.2,
 					"description": "description float",
 					"minimum":     1.0,
-					"maximum":     10.0,})
+					"maximum":     10.0})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
@@ -94,7 +94,7 @@ func TestCreateProperty(t *testing.T) {
 					"default":     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
 					"description": "description date",
 					"minimum":     time.Date(2019, 12, 28, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
-					"maximum":     time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local).Format(time.RFC3339),})
+					"maximum":     time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local).Format(time.RFC3339)})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
@@ -163,17 +163,19 @@ func TestNewSchema(t *testing.T) {
 						"default":     "paul",
 						"description": "description str",
 						"minLength":   1,
-						"maxLength":   10,}),
+						"maxLength":   10}),
 				},
 			},
 			want: &Schema{
 				Name: "Simple One",
-				Properties: map[string]PropertyType{
-					"name": &StringType{
-						Description: "description str",
-						MinLength:   1,
-						MaxLength:   10,
-						Default:     "paul",
+				Properties: Properties{
+					Columns: map[string]PropertyType{
+						"name": &StringType{
+							Description: "description str",
+							MinLength:   1,
+							MaxLength:   10,
+							Default:     "paul",
+						},
 					},
 				},
 				ProjectID: uuid.FromStringOrNil("3341fa1e-90b0-482a-b0ac-74a76d6af57c"),
@@ -191,29 +193,31 @@ func TestNewSchema(t *testing.T) {
 						"default":     "paul",
 						"description": "description str",
 						"minLength":   1,
-						"maxLength":   10,}),
+						"maxLength":   10}),
 					"age": util.StructProto(map[string]interface{}{
 						"type":        "integer",
 						"default":     10,
 						"description": "description int",
 						"minimum":     18,
-						"maximum":     60,}),
+						"maximum":     60}),
 				},
 			},
 			want: &Schema{
 				Name: "Simple One",
-				Properties: map[string]PropertyType{
-					"name": &StringType{
-						Description: "description str",
-						MinLength:   1,
-						MaxLength:   10,
-						Default:     "paul",
-					},
-					"age": &IntegerType{
-						Description: "description int",
-						Minimum:     18,
-						Maximum:     60,
-						Default:     10,
+				Properties: Properties{
+					Columns: map[string]PropertyType{
+						"name": &StringType{
+							Description: "description str",
+							MinLength:   1,
+							MaxLength:   10,
+							Default:     "paul",
+						},
+						"age": &IntegerType{
+							Description: "description int",
+							Minimum:     18,
+							Maximum:     60,
+							Default:     10,
+						},
 					},
 				},
 				ProjectID: uuid.FromStringOrNil("3341fa1e-90b0-482a-b0ac-74a76d6af57c"),
@@ -231,7 +235,7 @@ func TestNewSchema(t *testing.T) {
 						"default":     "paul",
 						"description": "description str",
 						"minLength":   1,
-						"maxLength":   10,}),
+						"maxLength":   10}),
 				},
 			},
 			want:    nil,

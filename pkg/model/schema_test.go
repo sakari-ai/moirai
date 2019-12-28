@@ -11,43 +11,43 @@ func TestProperties_Scan(t *testing.T) {
 	}
 	tests := []struct {
 		name      string
-		c         Properties
+		c         *Properties
 		args      args
 		wantErr   bool
-		assertKey func(p Properties)
+		assertKey func(p *Properties)
 	}{
 		{
 			name: "#1: Load string data",
-			c:    make(Properties),
+			c:    new(Properties),
 			args: args{
 				v: []byte(`{"name":{"type":"string","description":"drinking beer with Dima"}}`),
 			},
 			wantErr: false,
-			assertKey: func(p Properties) {
-				assert.Equal(t, p["name"], &StringType{Type: StringTp, Description: "drinking beer with Dima"})
+			assertKey: func(p *Properties) {
+				assert.Equal(t, p.Columns["name"], &StringType{Type: StringTp, Description: "drinking beer with Dima"})
 			},
 		},
 		{
 			name: "#2: Load string and integer data",
-			c:    make(Properties),
+			c:    new(Properties),
 			args: args{
 				v: []byte(`{"name":{"type":"string","description":"drinking beer with Dima"},"age":{"type":"integer","description":"playing game"}}`),
 			},
 			wantErr: false,
-			assertKey: func(p Properties) {
-				assert.Equal(t, p["name"], &StringType{Type: StringTp, Description: "drinking beer with Dima"})
-				assert.Equal(t, p["age"], &IntegerType{Type: IntegerTp, Description: "playing game"})
+			assertKey: func(p *Properties) {
+				assert.Equal(t, p.Columns["name"], &StringType{Type: StringTp, Description: "drinking beer with Dima"})
+				assert.Equal(t, p.Columns["age"], &IntegerType{Type: IntegerTp, Description: "playing game"})
 			},
 		},
 		{
 			name: "#3: Load Float data",
-			c:    make(Properties),
+			c:    new(Properties),
 			args: args{
 				v: []byte(`{"bet":{"type":"float","description":"betting game"}}`),
 			},
 			wantErr: false,
-			assertKey: func(p Properties) {
-				assert.Equal(t, p["bet"], &FloatType{Type: FloatTp, Description: "betting game"})
+			assertKey: func(p *Properties) {
+				assert.Equal(t, p.Columns["bet"], &FloatType{Type: FloatTp, Description: "betting game"})
 			},
 		},
 	}
