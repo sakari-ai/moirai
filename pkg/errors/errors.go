@@ -23,7 +23,11 @@ func BadError(err string) error {
 }
 
 func BuildInvalidArgument(fields ...FieldError) error {
-	st := status.New(codes.InvalidArgument, "Invalid data")
+	return BuildWithError("Invalid data", fields...)
+}
+
+func BuildWithError(errorString string, fields ...FieldError) error {
+	st := status.New(codes.InvalidArgument, errorString)
 
 	br := &errdetails.BadRequest{FieldViolations: make([]*errdetails.BadRequest_FieldViolation, 0, len(fields))}
 	for _, f := range fields {

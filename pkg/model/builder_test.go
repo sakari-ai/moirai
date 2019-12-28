@@ -3,7 +3,6 @@ package model
 import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/sakari-ai/moirai/core/util"
-	"github.com/sakari-ai/moirai/internal/lib/ptypes"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -90,21 +89,18 @@ func TestCreateProperty(t *testing.T) {
 			name: "#4: DateTime Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "date",
+					"type":        "date-time",
 					"default":     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
 					"description": "description date",
-					"minimum":     time.Date(2019, 12, 28, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
-					"maximum":     time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local).Format(time.RFC3339)})
+				})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
 			}()},
 			want: &DateTimeType{
 				Description: "description date",
-				Minimum:     ptypes.TimestampProto(time.Date(2019, 12, 28, 0, 0, 0, 0, time.Local)),
-				Maximum:     ptypes.TimestampProto(time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local)),
-				Default:     ptypes.TimestampProto(time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local)),
-				Type:        "date",
+				Default:     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
+				Type:        "date-time",
 			},
 			wantErr: false,
 		},

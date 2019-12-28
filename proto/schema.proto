@@ -4,7 +4,6 @@ package proto;
 option go_package = "proto;proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
-import "google/protobuf/timestamp.proto";
 
 message VersionResponse {
     string value = 1;
@@ -51,9 +50,8 @@ message FloatType {
 message DateTimeType {
     string type = 1;
     string description = 2;
-    google.protobuf.Timestamp minimum = 3;
-    google.protobuf.Timestamp maximum = 4;
-    google.protobuf.Timestamp default = 5;
+    string default = 5;
+    string format = 6;
 }
 
 message BooleanType {

@@ -23,6 +23,10 @@ type PropertyType interface {
 	ToProtoStruct() *structpb.Struct
 }
 
+type PostLoad interface {
+	Load()
+}
+
 type Properties struct {
 	Columns map[string]PropertyType
 }
@@ -34,9 +38,24 @@ type Schema struct {
 	Required   Required   `gorm:"column:required;type:bytea"`
 	ProjectID  uuid.UUID  `gorm:"column:project_id"`
 
-	Version   string `gorm:"column:version"`
+	Version   string `gorm:"column:version;unique_index"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (s Schema) JSONSchema() string {
+	sch := struct {
+		Type       string                  `json:"type"`
+		Properties map[string]PropertyType `json:"properties"`
+		Required   Required                `json:"required"`
+	}{
+		Type:       "object",
+		Properties: s.Properties.Columns,
+		Required:   s.Required,
+	}
+	data, _ := json.Marshal(sch)
+
+	return string(data)
 }
 
 type Required []string
@@ -95,6 +114,10 @@ func (c *Properties) Scan(v interface{}) error {
 		if prop != nil {
 			err := json.Unmarshal(rawJSON, prop)
 			if err == nil {
+				mapping[k] = prop
+			}
+			if pLoad, ok := prop.(PostLoad); ok {
+				pLoad.Load()
 				mapping[k] = prop
 			}
 		}

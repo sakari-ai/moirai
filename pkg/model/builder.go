@@ -6,7 +6,6 @@ import (
 	"github.com/golang/protobuf/ptypes/struct"
 	"github.com/mitchellh/hashstructure"
 	"github.com/sakari-ai/moirai/core/util"
-	"github.com/sakari-ai/moirai/internal/lib/ptypes"
 	"github.com/sakari-ai/moirai/pkg/errors"
 	"github.com/sakari-ai/moirai/proto"
 	uuid "github.com/satori/go.uuid"
@@ -14,11 +13,16 @@ import (
 )
 
 const (
-	DateTp    = "date"
+	DateTp    = "date-time"
 	BooleanTp = "boolean"
 	StringTp  = "string"
 	IntegerTp = "integer"
-	FloatTp   = "float"
+	FloatTp   = "number"
+
+	SchemeDefault = "default"
+	SchemeMinimum = "minimum"
+	SchemeMaximum = "maximum"
+	TimeRFC3339   = "2006-01-02T15:04:05.999999999Z"
 )
 
 type DTOStruct structpb.Struct
@@ -44,7 +48,7 @@ func (s *StringType) ToProtoStruct() *structpb.Struct {
 }
 
 func (s *StringType) Bind(p *DTOStruct) error {
-	if defVal := p.GetField("default"); defVal != nil {
+	if defVal := p.GetField(SchemeDefault); defVal != nil {
 		s.Default = defVal.GetStringValue()
 	}
 	if minVal := p.GetField("minLength"); minVal != nil {
@@ -68,15 +72,15 @@ func (i *IntegerType) ToProtoStruct() *structpb.Struct {
 }
 
 func (i *IntegerType) Bind(p *DTOStruct) error {
-	if defVal := p.GetField("default"); defVal != nil {
+	if defVal := p.GetField(SchemeDefault); defVal != nil {
 		defVal := int64(defVal.GetNumberValue())
 		i.Default = defVal
 	}
-	if minVal := p.GetField("minimum"); minVal != nil {
+	if minVal := p.GetField(SchemeMinimum); minVal != nil {
 		min := int64(minVal.GetNumberValue())
 		i.Minimum = min
 	}
-	if maxVal := p.GetField("maximum"); maxVal != nil {
+	if maxVal := p.GetField(SchemeMaximum); maxVal != nil {
 		max := int64(maxVal.GetNumberValue())
 		i.Maximum = max
 	}
@@ -95,15 +99,15 @@ func (fl *FloatType) ToProtoStruct() *structpb.Struct {
 }
 
 func (fl *FloatType) Bind(p *DTOStruct) error {
-	if defVal := p.GetField("default"); defVal != nil {
+	if defVal := p.GetField(SchemeDefault); defVal != nil {
 		defVal := defVal.GetNumberValue()
 		fl.Default = defVal
 	}
-	if minVal := p.GetField("minimum"); minVal != nil {
+	if minVal := p.GetField(SchemeMinimum); minVal != nil {
 		min := minVal.GetNumberValue()
 		fl.Minimum = min
 	}
-	if maxVal := p.GetField("maximum"); maxVal != nil {
+	if maxVal := p.GetField(SchemeMaximum); maxVal != nil {
 		max := maxVal.GetNumberValue()
 		fl.Maximum = max
 	}
@@ -132,39 +136,29 @@ func (b *BooleanType) Bind(p *DTOStruct) error {
 
 type DateTimeType proto.DateTimeType
 
-func (d *DateTimeType) ToProtoStruct() *structpb.Struct {
-	return bindingStruct(d)
+func (b *DateTimeType) ToProtoStruct() *structpb.Struct {
+	return bindingStruct(b)
 }
 
 func (b *DateTimeType) Bind(p *DTOStruct) error {
 	if desVal := p.GetField("description"); desVal != nil {
 		b.Description = desVal.GetStringValue()
 	}
-
-	if minVal := p.GetField("minimum"); minVal != nil {
-		min, err := time.Parse(time.RFC3339, minVal.GetStringValue())
+	if defVal := p.GetField(SchemeDefault); defVal != nil {
+		_, err := time.Parse(time.RFC3339, defVal.GetStringValue())
 		if err != nil {
 			return err
 		}
-		b.Minimum = ptypes.TimestampProto(min)
-	}
-	if maxVal := p.GetField("maximum"); maxVal != nil {
-		max, err := time.Parse(time.RFC3339, p.Fields["maximum"].GetStringValue())
-		if err != nil {
-			return err
-		}
-		b.Maximum = ptypes.TimestampProto(max)
-	}
-	if defVal := p.GetField("default"); defVal != nil {
-		def, err := time.Parse(time.RFC3339, p.Fields["default"].GetStringValue())
-		if err != nil {
-			return err
-		}
-		b.Default = ptypes.TimestampProto(def)
+		b.Default = defVal.GetStringValue()
 	}
 	b.Type = DateTp
 
 	return nil
+}
+
+func (b *DateTimeType) Load() {
+	b.Type = StringTp
+	b.Format = "date-time"
 }
 
 func CreateProperty(p *DTOStruct) (PropertyType, error) {
