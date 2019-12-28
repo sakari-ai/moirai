@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/capitalone/go-future-context v0.0.0-20190710004304-a898d890006f
+	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/dgraph-io/ristretto v0.0.1
 	github.com/facebookgo/ensure v0.0.0-20160127193407-b4ab57deab51 // indirect
 	github.com/facebookgo/inject v0.0.0-20180706035515-f23751cae28b

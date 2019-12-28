@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sakari-ai/moirai/bootstrap"
-	"github.com/sakari-ai/moirai/cache"
+	cache "github.com/sakari-ai/moirai/cache/arc"
 	"github.com/sakari-ai/moirai/cmd"
 	"github.com/sakari-ai/moirai/config"
 	"github.com/sakari-ai/moirai/config/loader"
