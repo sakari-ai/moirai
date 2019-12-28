@@ -10,6 +10,8 @@ require (
 	github.com/facebookgo/structtag v0.0.0-20150214074306-217e25fb9691 // indirect
 	github.com/facebookgo/subset v0.0.0-20150612182917-8dac2c3c4870 // indirect
 	github.com/gin-gonic/gin v1.5.0
+	github.com/gogo/protobuf v1.2.1
+	github.com/gogo/status v1.1.0
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
@@ -20,7 +22,10 @@ require (
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jonbodner/ranger v0.0.0-20170219221806-de0a8243f007 // indirect
+	github.com/magiconair/properties v1.8.1
+	github.com/mitchellh/hashstructure v1.0.0
 	github.com/mitchellh/mapstructure v1.1.2
+	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.1
 	github.com/stretchr/testify v1.4.0

@@ -8,7 +8,9 @@ import (
 type Option func(m *Migration)
 
 var (
-	preset = map[string][]*gormigrate.Migration{}
+	preset = map[string][]*gormigrate.Migration{
+		"cores": CoreMigrations(),
+	}
 )
 
 func WithGormigrate(db *gorm.DB, mod string) Option {

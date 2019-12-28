@@ -13,11 +13,17 @@ service Backend {
             get: "/v1/version"
         };
     }
-    //Update User Betting
+    //Create Schema
     rpc CreateSchema (Schema) returns (Schema) {
         option (google.api.http) = {
-            put: "/v1/schema"
+            post: "/v1/schema/{projectID}"
             body:"*"
+        };
+    }
+    //Get Schema
+    rpc GetSchema (RequestObjectById) returns (Schema) {
+        option (google.api.http) = {
+            get: "/v1/schema/{id}"
         };
     }
 }
