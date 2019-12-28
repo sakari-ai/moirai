@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/capitalone/go-future-context v0.0.0-20190710004304-a898d890006f
-	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/dgraph-io/ristretto v0.0.1
 	github.com/facebookgo/ensure v0.0.0-20160127193407-b4ab57deab51 // indirect
 	github.com/facebookgo/inject v0.0.0-20180706035515-f23751cae28b
@@ -20,7 +19,6 @@ require (
 	github.com/hashicorp/consul/api v1.3.0
 	github.com/hashicorp/golang-lru v0.5.3
 	github.com/hashicorp/memberlist v0.1.5
-	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334 // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jonbodner/ranger v0.0.0-20170219221806-de0a8243f007 // indirect
 	github.com/mitchellh/hashstructure v1.0.0

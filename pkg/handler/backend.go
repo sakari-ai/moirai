@@ -50,3 +50,11 @@ func (m *Moirai) GetSchema(ctx context.Context, req *proto.RequestObjectById) (*
 
 	return transferSchemaToProto(sch), nil
 }
+
+func (m *Moirai) CreateRecords(context.Context, *proto.Records) (*proto.Records, error) {
+	panic("implement me")
+}
+
+func (m *Moirai) UpdateRecords(context.Context, *proto.Records) (*proto.Records, error) {
+	panic("implement me")
+}

@@ -13,17 +13,39 @@ service Backend {
             get: "/v1/version"
         };
     }
-    //Create Schema
+    // Create Schema
     rpc CreateSchema (Schema) returns (Schema) {
         option (google.api.http) = {
             post: "/v1/schema/{projectID}"
             body:"*"
         };
     }
-    //Get Schema
+    // Get Schema
     rpc GetSchema (RequestObjectById) returns (Schema) {
         option (google.api.http) = {
             get: "/v1/schema/{id}"
         };
     }
+
+
+    // CreateRecords
+    rpc CreateRecords (Records) returns (Records) {
+        option (google.api.http) = {
+            post: "/v1/{projectID}/{schemaID}"
+            body:"*"
+        };
+    }
+
+    // UpdateRecords
+    rpc UpdateRecords (Records) returns (Records) {
+        option (google.api.http) = {
+            patch: "/v1/{projectID}/{schemaID}"
+            body:"*"
+        };
+    }
+
+    // List Records
+
+    // Delete Records
+
 }
