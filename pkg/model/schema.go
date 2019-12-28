@@ -60,7 +60,7 @@ func (s *Schema) BeforeCreate(scope *gorm.Scope) error {
 }
 
 func (c Properties) Value() (driver.Value, error) {
-	return json.Marshal(c)
+	return json.Marshal(c.Columns)
 }
 
 func (c *Properties) Scan(v interface{}) error {
