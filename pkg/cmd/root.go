@@ -10,6 +10,7 @@ import (
 	"github.com/sakari-ai/moirai/config/loader"
 	"github.com/sakari-ai/moirai/log"
 	"github.com/sakari-ai/moirai/pkg/handler"
+	"github.com/sakari-ai/moirai/pkg/storage"
 	"github.com/sakari-ai/moirai/proto"
 	"github.com/sakari-ai/moirai/server"
 	"github.com/sakari-ai/moirai/server/grpc"
@@ -65,6 +66,7 @@ func startAce() {
 		grpcCfg, httpCfg := cfg.GRPC, cfg.HTTP
 		objects = append(objects,
 			bootstrap.ByName("db_cache", cache.New(ctx, 100)),
+			bootstrap.ByName("schema_storage", storage.NewStorage()),
 			bootstrap.ByName("grpc", newGRPCServer(grpcServerOption{
 				RegisterFuncs: []grpc.RegisterFunc{registerAsset},
 				Config:        grpcCfg,
