@@ -18,9 +18,9 @@ jobs:
 
     - name: Get dependencies
       run: |
+        export GO111MODULE=on
         go mod vendor
         go mod tidy
-        find ./../../../go -name keys.generated.go -exec rm -irf {} \;
 
     - name: Go Test
       run: go test -v ./...
