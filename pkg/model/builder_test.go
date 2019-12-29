@@ -10,6 +10,7 @@ import (
 )
 
 func TestCreateProperty(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		p *DTOStruct
 	}
@@ -139,6 +140,7 @@ func TestCreateProperty(t *testing.T) {
 }
 
 func TestNewSchema(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		name      string
 		projectId string
@@ -242,7 +244,7 @@ func TestNewSchema(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewSchema(tt.args.name, tt.args.projectId, tt.args.columns)
+			got, err := NewSchema(tt.args.name, uuid.FromStringOrNil(tt.args.projectId), tt.args.columns)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewSchema() error = %v, wantErr %v", err, tt.wantErr)
 				return

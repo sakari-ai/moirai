@@ -32,7 +32,11 @@ func (m *Moirai) Version(context.Context, *empty.Empty) (*proto.VersionResponse,
 }
 
 func (m *Moirai) CreateSchema(ctx context.Context, req *proto.Schema) (*proto.Schema, error) {
-	schema, err := model.NewSchema(req.Name, req.ProjectID, req.Properties, req.Required...)
+	projectID, err := uuid.FromString(req.ProjectID)
+	if err != nil {
+		return &proto.Schema{}, errors.BuildInvalidArgument(errors.FieldError{Field: "project_id", Description: "project_id is nil"})
+	}
+	schema, err := model.NewSchema(req.Name, projectID, req.Properties, req.Required...)
 	if err != nil {
 		return &proto.Schema{}, err
 	}
@@ -42,6 +46,7 @@ func (m *Moirai) CreateSchema(ctx context.Context, req *proto.Schema) (*proto.Sc
 		return &proto.Schema{}, errors.Internal
 	}
 	req.Id = schema.ID.String()
+	req.Version = schema.Version
 	return req, nil
 }
 

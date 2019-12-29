@@ -60,9 +60,8 @@ func TestPostgresStorage_GetSchema(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			defer tt.fields.DB.Close()
-			p := PostgresStorage{
-				DB: tt.fields.DB,
-			}
+			p := NewStorage()
+			p.DB = tt.fields.DB
 			p.WriteSchema(tt.args.item)
 			got, err := p.GetSchema(tt.args.item.ID)
 			assert.ObjectsAreEqualValues(got.Properties, model.Properties{

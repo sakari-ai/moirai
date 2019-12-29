@@ -11,6 +11,7 @@ import (
 )
 
 func TestJsonSchemaValidator_Validate(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		schemaLoader map[string]*gojsonschema.Schema
 		RWMutex      *sync.RWMutex
