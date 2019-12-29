@@ -30,7 +30,7 @@ func TestLoad(t *testing.T) {
 			}},
 		{
 			name: "Load consul host",
-			args: args{storage: "http://consul.io/innte"},
+			args: args{storage: "http://consul.io/moirai"},
 			want: func(loader loader.Loader) bool {
 				c, ok := loader.(*consul.Consul)
 				return ok && c.Host == "http://consul.io/moirai"
