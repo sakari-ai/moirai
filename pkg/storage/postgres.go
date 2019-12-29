@@ -23,6 +23,16 @@ func (p PostgresStorage) GetSchema(id uuid.UUID) (*model.Schema, error) {
 	return m, res.Error()
 }
 
+func (p PostgresStorage) WriteRecords(records []*model.Record) ([]*model.Record, []error) {
+	var errs []error
+	for _, record := range records {
+		if err := p.DB.Create(&record).Error(); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	return records, errs
+}
+
 func NewStorage() *PostgresStorage {
 	return new(PostgresStorage)
 }

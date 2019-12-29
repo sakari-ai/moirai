@@ -11,7 +11,17 @@ func CoreMigrations() []*gormigrate.Migration {
 		{
 			ID: "schema-database",
 			Migrate: func(db *gorm.DB) error {
-				return db.AutoMigrate(&model.Schema{}).Error
+				return db.AutoMigrate(
+					&model.Schema{},
+				).Error
+			},
+		},
+		{
+			ID: "add-record",
+			Migrate: func(db *gorm.DB) error {
+				return db.AutoMigrate(
+					&model.Record{},
+				).Error
 			},
 		},
 	}

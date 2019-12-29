@@ -43,3 +43,10 @@ func BuildWithError(errorString string, fields ...FieldError) error {
 	}
 	return grpcstatus.FromGRPCStatus(statusError).Err()
 }
+
+func BuildError(errs []error) error {
+	if errs != nil {
+		return errs[0]
+	}
+	return nil
+}

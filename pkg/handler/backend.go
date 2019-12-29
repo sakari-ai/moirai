@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -21,6 +22,7 @@ type Moirai struct {
 type Storage interface {
 	WriteSchema(schema *model.Schema) error
 	GetSchema(uuid uuid.UUID) (*model.Schema, error)
+	WriteRecords(records []*model.Record) ([]*model.Record, []error)
 }
 
 func (m *Moirai) Version(context.Context, *empty.Empty) (*proto.VersionResponse, error) {
@@ -51,8 +53,26 @@ func (m *Moirai) GetSchema(ctx context.Context, req *proto.RequestObjectById) (*
 	return transferSchemaToProto(sch), nil
 }
 
-func (m *Moirai) CreateRecords(context.Context, *proto.Records) (*proto.Records, error) {
-	panic("implement me")
+func (m *Moirai) CreateRecords(ctx context.Context, records *proto.Records) (*proto.Records, error) {
+	// Validate records
+
+	// Convert proto -> model
+	var mRecords []*model.Record
+	for _, v := range records.Records {
+		record, err := model.NewRecord(records.ProjectID, records.SchemaID, v.Fields)
+		if err == nil {
+			mRecords = append(mRecords, record)
+		} else {
+			fmt.Println("loi cai lon gi roi", err.Error())
+		}
+	}
+
+	// Save it
+	results, errs := m.WriteRecords(mRecords)
+
+	// Process result & errors
+
+	return transferRecordToProto(results), errors.BuildError(errs)
 }
 
 func (m *Moirai) UpdateRecords(context.Context, *proto.Records) (*proto.Records, error) {
