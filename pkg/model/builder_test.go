@@ -3,7 +3,6 @@ package model
 import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/sakari-ai/moirai/core/util"
-	"github.com/sakari-ai/moirai/internal/lib/ptypes"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -24,7 +23,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#1: String Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "string",
+					"type":        StringTp,
 					"default":     "paul",
 					"description": "description str",
 					"minLength":   1,
@@ -38,7 +37,7 @@ func TestCreateProperty(t *testing.T) {
 				MinLength:   1,
 				MaxLength:   10,
 				Default:     "paul",
-				Type:        "string",
+				Type:        StringTp,
 			},
 			wantErr: false,
 		},
@@ -46,7 +45,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#2: Integer Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "integer",
+					"type":        IntegerTp,
 					"default":     10,
 					"description": "description int",
 					"minimum":     1,
@@ -60,7 +59,7 @@ func TestCreateProperty(t *testing.T) {
 				Minimum:     1,
 				Maximum:     10,
 				Default:     10,
-				Type:        "integer",
+				Type:        IntegerTp,
 			},
 			wantErr: false,
 		},
@@ -68,7 +67,7 @@ func TestCreateProperty(t *testing.T) {
 			name: "#3: Float Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "float",
+					"type":        FloatTp,
 					"default":     2.2,
 					"description": "description float",
 					"minimum":     1.0,
@@ -82,7 +81,7 @@ func TestCreateProperty(t *testing.T) {
 				Minimum:     1.0,
 				Maximum:     10.0,
 				Default:     2.2,
-				Type:        "float",
+				Type:        FloatTp,
 			},
 			wantErr: false,
 		},
@@ -90,21 +89,20 @@ func TestCreateProperty(t *testing.T) {
 			name: "#4: DateTime Type",
 			args: args{p: func() *DTOStruct {
 				jsonSchema := util.StructProto(map[string]interface{}{
-					"type":        "date",
+					"format":      "date-time",
+					"type":        "string",
 					"default":     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
 					"description": "description date",
-					"minimum":     time.Date(2019, 12, 28, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
-					"maximum":     time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local).Format(time.RFC3339)})
+				})
 				dto := DTOStruct(*jsonSchema)
 
 				return &dto
 			}()},
 			want: &DateTimeType{
 				Description: "description date",
-				Minimum:     ptypes.TimestampProto(time.Date(2019, 12, 28, 0, 0, 0, 0, time.Local)),
-				Maximum:     ptypes.TimestampProto(time.Date(2019, 12, 30, 0, 0, 0, 0, time.Local)),
-				Default:     ptypes.TimestampProto(time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local)),
-				Type:        "date",
+				Default:     time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local).Format(time.RFC3339),
+				Format:      "date-time",
+				Type:        StringTp,
 			},
 			wantErr: false,
 		},
