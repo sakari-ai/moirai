@@ -166,8 +166,12 @@ github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 # github.com/reactivex/rxgo v1.0.0
 github.com/reactivex/rxgo
+github.com/reactivex/rxgo/errors
+github.com/reactivex/rxgo/fx
 github.com/reactivex/rxgo/handlers
+github.com/reactivex/rxgo/observable
 github.com/reactivex/rxgo/observer
+github.com/reactivex/rxgo/subscription
 # github.com/santhosh-tekuri/jsonschema v1.2.4
 github.com/santhosh-tekuri/jsonschema
 github.com/santhosh-tekuri/jsonschema/decoders
