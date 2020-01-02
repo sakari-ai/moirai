@@ -193,25 +193,19 @@ func CreateProperty(p *DTOStruct) (PropertyType, error) {
 		prop.Load()
 		return prop, err
 	}
-
-	return nil, errors.BadError("property not found")
+	return nil, fmt.Errorf("property (%s) is not supported", tp.GetStringValue())
 }
 
-func NewSchema(name, projectId string, columns map[string]*structpb.Struct, required ...string) (*Schema, error) {
+func NewSchema(name string, projectID uuid.UUID, columns map[string]*structpb.Struct, required ...string) (*Schema, error) {
 	sch := &Schema{Name: name, Required: required}
 	var errs []errors.FieldError
-	projectID, err := uuid.FromString(projectId)
-	if err != nil {
-		errs = append(errs, errors.FieldError{Field: "project_id", Description: "Not nill"})
-		return sch, errors.BuildInvalidArgument(errs...)
-	}
 	sch.ProjectID = projectID
 	properties := Properties{Columns: map[string]PropertyType{}}
 	for k, val := range columns {
 		column := DTOStruct(*val)
 		prop, err := CreateProperty(&column)
 		if err != nil {
-			errs = append(errs, errors.FieldError{Field: k, Description: fmt.Sprintf("Field %s has error %s", k, err.Error())})
+			errs = append(errs, errors.FieldError{Field: k, Description: fmt.Sprintf("Field %s has error (%s)", k, err.Error())})
 		} else {
 			properties.Columns[k] = prop
 		}

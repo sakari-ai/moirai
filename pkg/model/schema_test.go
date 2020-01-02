@@ -8,6 +8,7 @@ import (
 )
 
 func TestProperties_Scan(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		v interface{}
 	}
@@ -53,7 +54,7 @@ func TestProperties_Scan(t *testing.T) {
 			},
 		},
 		{
-			name: "#1: Load Datetime data",
+			name: "#4: Load Datetime data",
 			c:    new(Properties),
 			args: args{
 				v: []byte(`{"name":{"type":"string","description":"drinking beer with Dima","format":"date-time"}}`),
@@ -61,6 +62,17 @@ func TestProperties_Scan(t *testing.T) {
 			wantErr: false,
 			assertKey: func(p *Properties) {
 				assert.Equal(t, p.Columns["name"], &DateTimeType{Type: StringTp, Format: DateTp, Description: "drinking beer with Dima"})
+			},
+		},
+		{
+			name: "#5: Load Boolean data",
+			c:    new(Properties),
+			args: args{
+				v: []byte(`{"love":{"type":"boolean","description":"forever"}}`),
+			},
+			wantErr: false,
+			assertKey: func(p *Properties) {
+				assert.Equal(t, p.Columns["love"], &BooleanType{Type: BooleanTp, Description: "forever"})
 			},
 		},
 	}
