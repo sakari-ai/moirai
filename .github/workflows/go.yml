@@ -18,7 +18,6 @@ jobs:
 
     - name: Get dependencies
       run: |
-        export GO111MODULE=off
         go mod vendor
         go mod tidy
 
