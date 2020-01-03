@@ -1,5 +1,5 @@
 # iron/go:dev is the alpine image with the go tools added
-FROM golang:1.12
+FROM golang:1.13
 
 ARG service_name
 

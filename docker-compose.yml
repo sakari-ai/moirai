@@ -47,7 +47,7 @@ services:
         - service_name=moirai
     environment:
       - CONFIG_STORAGE=http://consul-server-bootstrap:8500
-      - CONFIG_NAMESPACE=moirai/backend
+      - CONFIG_NAMESPACE=moirai/backend_docker
       - ENV=dev
     command: "./moirai start moirai"
     networks:

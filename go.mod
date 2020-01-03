@@ -23,6 +23,7 @@ require (
 	github.com/jonbodner/ranger v0.0.0-20170219221806-de0a8243f007 // indirect
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/mitchellh/mapstructure v1.1.2
+	github.com/reactivex/rxgo v1.0.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.1

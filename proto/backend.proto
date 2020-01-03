@@ -31,21 +31,16 @@ service Backend {
     // CreateRecords
     rpc CreateRecords (Records) returns (Records) {
         option (google.api.http) = {
-            post: "/v1/{projectID}/{schemaID}"
+            post: "/v1/{projectID}/schema/{schemaID}/records"
             body:"*"
         };
     }
 
-    // UpdateRecords
-    rpc UpdateRecords (Records) returns (Records) {
+    // UpdateRecord
+    rpc UpdateRecord (Record) returns (Record) {
         option (google.api.http) = {
-            patch: "/v1/{projectID}/{schemaID}"
+            patch: "/v1/{projectID}/schema/{schemaID}/record"
             body:"*"
         };
     }
-
-    // List Records
-
-    // Delete Records
-
 }

@@ -11,6 +11,7 @@ import (
 
 var (
 	Internal = status.Error(codes.Internal, "Internal server error")
+	NotFound = status.Error(codes.InvalidArgument, "Item not found")
 )
 
 type FieldError struct {
@@ -42,11 +43,4 @@ func BuildWithError(errorString string, fields ...FieldError) error {
 		fmt.Print(e)
 	}
 	return grpcstatus.FromGRPCStatus(statusError).Err()
-}
-
-func BuildError(errs []error) error {
-	if errs != nil {
-		return errs[0]
-	}
-	return nil
 }

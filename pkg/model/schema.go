@@ -43,6 +43,10 @@ type Schema struct {
 	UpdatedAt time.Time
 }
 
+func (s Schema) GetProp(k string) PropertyType {
+	return s.Properties.Columns[k]
+}
+
 func (s Schema) JSONSchema() string {
 	sch := struct {
 		Type       string                  `json:"type"`

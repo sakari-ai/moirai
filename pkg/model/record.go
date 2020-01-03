@@ -6,7 +6,6 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/jinzhu/gorm"
 	"github.com/sakari-ai/moirai/core/util"
-	"github.com/sakari-ai/moirai/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
@@ -41,28 +40,13 @@ func (c *Fields) Scan(v interface{}) error {
 	data := make(map[string]interface{})
 
 	_ = json.Unmarshal(v.([]byte), &data)
-
 	c.Columns = data
 
 	return nil
 }
 
-func NewRecord(projectID string, schemaID string, fields *structpb.Struct) (*Record, error) {
+func NewRecord(pid uuid.UUID, sid uuid.UUID, fields *structpb.Struct) *Record {
 	record := &Record{}
-	var errs []errors.FieldError
-	pid, err := uuid.FromString(projectID)
-	if err != nil {
-		errs = append(errs, errors.FieldError{Field: "project_id", Description: "invalid"})
-	}
-
-	sid, err := uuid.FromString(schemaID)
-	if err != nil {
-		errs = append(errs, errors.FieldError{Field: "schema_id", Description: "invalid"})
-	}
-
-	if len(errs) > 0 {
-		return nil, errors.BuildInvalidArgument(errs...)
-	}
 
 	record.ProjectID = pid
 	record.SchemaID = sid
@@ -70,5 +54,5 @@ func NewRecord(projectID string, schemaID string, fields *structpb.Struct) (*Rec
 		Columns: util.StructToMap(fields),
 	}
 
-	return record, nil
+	return record
 }

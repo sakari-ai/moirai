@@ -77,4 +77,6 @@ message Records {
 message Record {
     string id = 1;
     google.protobuf.Struct fields = 2;
+    string projectID = 3;
+    string schemaID = 4;
 }

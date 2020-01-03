@@ -53,7 +53,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"name": "Paul Aan",
 				}),
 			},
-			want:    true,
 			wantErr: false,
 		},
 		{
@@ -82,7 +81,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"name": "Paul",
 				}),
 			},
-			want:    false,
 			wantErr: true,
 		},
 		{
@@ -111,7 +109,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"age": 10,
 				}),
 			},
-			want:    true,
 			wantErr: false,
 		},
 		{
@@ -140,7 +137,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"age": 5,
 				}),
 			},
-			want:    false,
 			wantErr: true,
 		},
 		{
@@ -168,7 +164,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"dob": "2019-12-29T08:30:06.283185Z",
 				}),
 			},
-			want:    true,
 			wantErr: false,
 		},
 		{
@@ -196,7 +191,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"dob": "201912-27T08:30:06.283185Z",
 				}),
 			},
-			want:    false,
 			wantErr: true,
 		},
 		{
@@ -222,7 +216,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"dob": true,
 				}),
 			},
-			want:    true,
 			wantErr: false,
 		},
 		{
@@ -248,7 +241,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"dob": "x",
 				}),
 			},
-			want:    false,
 			wantErr: true,
 		},
 		{
@@ -277,7 +269,6 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"age": 11.0,
 				}),
 			},
-			want:    true,
 			wantErr: false,
 		},
 		{
@@ -306,20 +297,16 @@ func TestJsonSchemaValidator_Validate(t *testing.T) {
 					"age": "9",
 				}),
 			},
-			want:    false,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := NewValidator()
-			got, err := v.Validate(tt.args.schema, tt.args.record)
+			err := v.Validate(tt.args.schema, tt.args.record)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if got != tt.want {
-				t.Errorf("Validate() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

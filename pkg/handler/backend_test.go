@@ -6,8 +6,11 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/golang/protobuf/ptypes/struct"
 	"github.com/sakari-ai/moirai/core/util"
+	"github.com/sakari-ai/moirai/database"
+	"github.com/sakari-ai/moirai/database/fake"
 	"github.com/sakari-ai/moirai/pkg/errors"
 	"github.com/sakari-ai/moirai/pkg/model"
+	"github.com/sakari-ai/moirai/pkg/storage"
 	"github.com/sakari-ai/moirai/proto"
 	"github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
@@ -31,6 +34,18 @@ func (m *mockStorage) GetSchema(uuid uuid.UUID) (*model.Schema, error) {
 	arg := m.Called(uuid)
 
 	return arg.Get(0).(*model.Schema), arg.Error(1)
+}
+
+func (m *mockStorage) WriteRecord(schema model.Schema, record *model.Record) (*model.Record, error) {
+	arg := m.Called(schema, record)
+
+	return arg.Get(0).(*model.Record), arg.Error(1)
+}
+
+func (m *mockStorage) UpdateRecord(schema model.Schema, record *model.Record) (*model.Record, error) {
+	arg := m.Called(schema, record)
+
+	return arg.Get(0).(*model.Record), arg.Error(1)
 }
 
 func TestMoirai_CreateSchema(t *testing.T) {
@@ -308,6 +323,150 @@ func TestMoirai_Version(t *testing.T) {
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Version() got = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestMoirai_UpdateRecord(t *testing.T) {
+	sch := &model.Schema{
+		Name: "Simple One",
+		Properties: model.Properties{
+			Columns: map[string]model.PropertyType{
+				"name": &model.StringType{
+					Type:        model.StringTp,
+					Description: "description str",
+					MinLength:   1,
+					MaxLength:   10,
+					Default:     "paul",
+				},
+				"age":    &model.IntegerType{Type: model.IntegerTp},
+				"salary": &model.FloatType{Type: model.FloatTp},
+				"love":   &model.BooleanType{Type: model.BooleanTp},
+				"dob":    &model.DateTimeType{Type: model.StringTp, Format: model.DateTp},
+			},
+		},
+		Required:  []string{},
+		ProjectID: uuid.FromStringOrNil("3341fa1e-90b0-482a-b0ac-74a76d6af57c"),
+	}
+	rcd := &model.Record{
+		ProjectID: uuid.FromStringOrNil("3341fa1e-90b0-482a-b0ac-74a76d6af57c"),
+		SchemaID:  sch.ID,
+		Fields: model.Fields{
+			Columns: map[string]interface{}{
+				"name":   "paul",
+				"age":    35,
+				"salary": 3.5,
+				"love":   true,
+				"dob":    time.Date(1986, 12, 28, 0, 0, 0, 0, time.Local).Format(model.TimeRFC3339),
+			},
+		},
+	}
+	type fields struct {
+		DB      database.DBEngine
+		Storage Storage
+	}
+	type args struct {
+		schema model.Schema
+		record *proto.Record
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *model.Record
+		wantErr bool
+	}{
+		{
+			name: "#1:  Update Records simple",
+			fields: fields{
+				DB: func() database.DBEngine {
+					mockDB := fake.PrepareForTesting(t, fake.WithModels(&model.Schema{}, &model.Record{}, &storage.IntCell{}, &storage.NumberCell{}, &storage.StringCell{}, &storage.DateCell{}, &storage.BoolCell{}))
+
+					mockDB.Create(sch)
+					mockDB.Create(rcd)
+					mockDB.Create(&storage.StringCell{
+						RecordID: rcd.ID,
+						Key:      "name",
+						Value:    "paul",
+					})
+					mockDB.Create(&storage.IntCell{
+						RecordID: rcd.ID,
+						Key:      "age",
+						Value:    35,
+					})
+					mockDB.Create(&storage.NumberCell{
+						RecordID: rcd.ID,
+						Key:      "salary",
+						Value:    3.5,
+					})
+					mockDB.Create(&storage.BoolCell{
+						RecordID: rcd.ID,
+						Key:      "love",
+						Value:    true,
+					})
+					mockDB.Create(&storage.DateCell{
+						ID:       uuid.NewV4(),
+						RecordID: rcd.ID,
+						Key:      "dob",
+						Value:    time.Date(1986, 12, 28, 0, 0, 0, 0, time.Local),
+					})
+					return mockDB
+				}(),
+			},
+			args: args{
+				schema: *sch,
+				record: &proto.Record{
+					Id:        rcd.ID.String(),
+					ProjectID: "3341fa1e-90b0-482a-b0ac-74a76d6af57c",
+					SchemaID:  sch.ID.String(),
+					Fields: util.StructProto(map[string]interface{}{
+						"name":   "dima",
+						"age":    31,
+						"salary": 2.8,
+						"love":   false,
+						"dob":    time.Date(1990, 12, 28, 0, 0, 0, 0, time.Local).Format(model.TimeRFC3339),
+					}),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Moirai{
+				Storage:   &storage.SQLStorage{DB: tt.fields.DB},
+				Validator: model.NewValidator(),
+			}
+			_, err := m.UpdateRecord(context.Background(), tt.args.record)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateRecord() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			findName := new(storage.StringCell)
+			tt.fields.DB.Model(findName).Find(findName, "value = ? and record_id = ?", "dima", tt.args.record.Id)
+			assert.Equal(t, findName.Value, "dima")
+			assert.Equal(t, findName.Key, "name")
+
+			findAge := new(storage.IntCell)
+			tt.fields.DB.Model(findAge).Find(findAge, "value = ? and record_id = ?", 31, tt.args.record.Id)
+			assert.Equal(t, findAge.Value, int64(31))
+			assert.Equal(t, findAge.Key, "age")
+
+			findSalary := new(storage.NumberCell)
+			tt.fields.DB.Model(findAge).Find(findSalary, "value = ? and record_id = ?", 2.8, tt.args.record.Id)
+			assert.Equal(t, findSalary.Value, 2.8)
+			assert.Equal(t, findSalary.Key, "salary")
+
+			findDOB := new(storage.DateCell)
+			tt.fields.DB.Model(findAge).Find(findDOB, "record_id = ?",
+				tt.args.record.Id)
+			assert.Equal(t, findDOB.Value.Format(model.TimeRFC3339), time.Date(1990, 12, 28, 0, 0, 0, 0, time.Local).Format(model.TimeRFC3339))
+			assert.Equal(t, findDOB.Key, "dob")
+
+			findLove := new(storage.BoolCell)
+			tt.fields.DB.Model(findAge).Find(findLove, "value = ? and record_id = ?", 0, tt.args.record.Id)
+			assert.False(t, findLove.Value)
+			assert.Equal(t, findLove.Key, "love")
 		})
 	}
 }
