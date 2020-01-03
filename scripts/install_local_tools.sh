@@ -27,7 +27,8 @@ prepareGOPATHBin() {
 }
 
 installProtocGenGo() {
-  go install ./vendor/github.com/golang/protobuf/protoc-gen-go
+  echo "Installing"
+#  go install ./vendor/github.com/golang/protobuf/protoc-gen-go
 }
 
 installGRPCGateway() {

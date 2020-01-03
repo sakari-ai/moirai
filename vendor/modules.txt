@@ -60,6 +60,7 @@ github.com/gogo/protobuf/types
 # github.com/gogo/status v1.1.0
 github.com/gogo/status
 # github.com/golang/protobuf v1.3.2
+github.com/golang/protobuf/descriptor
 github.com/golang/protobuf/jsonpb
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/protoc-gen-go/descriptor
@@ -163,6 +164,14 @@ github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/procfs v0.0.3
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
+# github.com/reactivex/rxgo v1.0.0
+github.com/reactivex/rxgo
+github.com/reactivex/rxgo/errors
+github.com/reactivex/rxgo/fx
+github.com/reactivex/rxgo/handlers
+github.com/reactivex/rxgo/observable
+github.com/reactivex/rxgo/observer
+github.com/reactivex/rxgo/subscription
 # github.com/santhosh-tekuri/jsonschema v1.2.4
 github.com/santhosh-tekuri/jsonschema
 github.com/santhosh-tekuri/jsonschema/decoders
@@ -187,8 +196,11 @@ github.com/spf13/pflag
 # github.com/spf13/viper v1.6.1
 github.com/spf13/viper
 github.com/spf13/viper/remote
+# github.com/stretchr/objx v0.1.1
+github.com/stretchr/objx
 # github.com/stretchr/testify v1.4.0
 github.com/stretchr/testify/assert
+github.com/stretchr/testify/mock
 # github.com/subosito/gotenv v1.2.0
 github.com/subosito/gotenv
 # github.com/ugorji/go/codec v1.1.7

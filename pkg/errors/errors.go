@@ -11,6 +11,7 @@ import (
 
 var (
 	Internal = status.Error(codes.Internal, "Internal server error")
+	NotFound = status.Error(codes.InvalidArgument, "Item not found")
 )
 
 type FieldError struct {

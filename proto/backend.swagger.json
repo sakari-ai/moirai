@@ -89,9 +89,121 @@
           "Backend"
         ]
       }
+    },
+    "/v1/{projectID}/schema/{schemaID}/record": {
+      "patch": {
+        "summary": "UpdateRecord",
+        "operationId": "UpdateRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoRecord"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoRecord"
+            }
+          }
+        ],
+        "tags": [
+          "Backend"
+        ]
+      }
+    },
+    "/v1/{projectID}/schema/{schemaID}/records": {
+      "post": {
+        "summary": "CreateRecords",
+        "operationId": "CreateRecords",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoRecords"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoRecords"
+            }
+          }
+        ],
+        "tags": [
+          "Backend"
+        ]
+      }
     }
   },
   "definitions": {
+    "protoRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fields": {
+          "$ref": "#/definitions/protobufStruct"
+        },
+        "projectID": {
+          "type": "string"
+        },
+        "schemaID": {
+          "type": "string"
+        }
+      }
+    },
+    "protoRecords": {
+      "type": "object",
+      "properties": {
+        "projectID": {
+          "type": "string"
+        },
+        "schemaID": {
+          "type": "string"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protoRecord"
+          }
+        }
+      }
+    },
     "protoSchema": {
       "type": "object",
       "properties": {

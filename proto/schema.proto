@@ -67,3 +67,16 @@ message Schema {
     string projectID = 5;
     string version = 6;
 }
+
+message Records {
+    string projectID = 1;
+    string schemaID = 2;
+    repeated Record records = 3;
+}
+
+message Record {
+    string id = 1;
+    google.protobuf.Struct fields = 2;
+    string projectID = 3;
+    string schemaID = 4;
+}
