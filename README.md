@@ -37,6 +37,13 @@ export GO111MODULE=on
 # You can use go built-in tool to clone the code
 go get -d -v github.com/sakari-ai/moirai
 
+
+### 3. Run with Docker-compose
+
+```sh
+docker-compose up -d
+```
+
 # Or man-handling it
 mkdir -p $GOPATH/src/github.com/sakari-ai/moirai
 git clone https://github.com/sakari-ai/moirai.git $GOPATH/src/github.com/sakari-ai/moirai
