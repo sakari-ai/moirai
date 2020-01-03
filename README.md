@@ -38,17 +38,16 @@ export GO111MODULE=on
 go get -d -v github.com/sakari-ai/moirai
 
 
-### 3. Run with Docker-compose
-
-```sh
-docker-compose up -d
-```
-
 # Or man-handling it
 mkdir -p $GOPATH/src/github.com/sakari-ai/moirai
 git clone https://github.com/sakari-ai/moirai.git $GOPATH/src/github.com/sakari-ai/moirai
 ```
 
+### 3. Run with Docker-compose
+
+```sh
+docker-compose up -d
+```
 ### 4. Installing dependencies (Optional)
 
 We love localizing project level dependencies so now we're going to download them using a go module utility.
