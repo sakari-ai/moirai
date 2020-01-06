@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+
 	"github.com/jinzhu/gorm"
 	"github.com/sakari-ai/moirai/database"
 	uuid "github.com/satori/go.uuid"
@@ -23,9 +24,15 @@ func (*IntCell) BeforeCreate(scope *gorm.Scope) error {
 }
 
 func (i *intRepo) processCommand(prop emitterKey) error {
-	val, ok := prop.val.(float64)
+	val, ok := prop.val.(int)
 	if !ok {
-		return errors.New("value is not able to convert into int")
+		valF, ok := prop.val.(float64)
+		if ok {
+			val = int(valF)
+		}
+		if !ok {
+			return errors.New("value is not able to convert into int")
+		}
 	}
 	if prop.command == CreateCell {
 		return i.tx.Create(&IntCell{
